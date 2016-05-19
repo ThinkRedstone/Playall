@@ -30,6 +30,22 @@ def get_last_episode(anime):
             return int(entry.find('my_watched_episodes').text)
 
 
+def set_last_episode(anime, episode):
+    global auth
+    if isinstance(anime, Anime):
+        id_number = anime.id
+    else:
+        id_number = anime
+    print id_number
+    root = ET.parse('template.xml').getroot()
+    root.find('episode').text = str(episode)
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root)
+    data = {'data': xml}
+    r = requests.post("http://myanimelist.net/api/animelist/update/%d.xml" % id_number, auth=auth, data=data)
+    if r.status_code != "200":
+        raise Exception
+
+
 class Anime:
     def __init__(self, id, title):
         self.id = id
@@ -40,4 +56,6 @@ class Anime:
 
 
 if __name__ == "__main__":
-    print get_last_episode(search('boku no hero academia')[0])
+    anime = search('boku no hero academia')[0]
+    print get_last_episode(anime)
+
