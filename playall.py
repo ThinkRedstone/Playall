@@ -2,23 +2,21 @@
 from os import getcwd
 from subprocess import call
 from sys import argv
+from mal_handler import *
 
 
 def episode_string(n):
     return str(n / 10) + str(n % 10)
 
 
-def read_last_watched(directory=getcwd()):
-    try:
-        with open(directory + "/.last_watched", "r") as f:
-            return int(f.readline())
-    except IOError:
-        return 1
+def read_anime(directory=getcwd()):
+    with open(directory + "/.playall", "r") as f:
+        return f.readline()
 
 
-def write_last_watched(last_watched, directory=getcwd()):
-    with open(directory + "/.last_watched", "w+") as f:
-        f.write(str(last_watched))
+def write_anime(anime, directory=getcwd()):
+    with open(directory + "/.playall", "w+") as f:
+        f.write(str(anime))
 
 
 def play_episode(episode):
@@ -31,19 +29,22 @@ if __name__ == "__main__":
     try:
         while True:
             if len(argv) > 1:
-                i = int(argv[1])
-                write_last_watched(i)
+                write_anime(' '.join(argv[1:]))
+                anime = search(' '.join(argv[1:]))[0]
             else:
-                i = read_last_watched()
-            print i
+                anime = search(read_anime())[0]
+            print anime
+            episode = get_last_episode(anime)
+            print episode
             command = raw_input("Enter command\n")
             if "p" in command:
-                play_episode(i)
+                play_episode(episode + 1)
             if "n" in command:
-                write_last_watched(i + 1)
-                play_episode(i + 1)
+                set_last_episode(anime, episode + 1)
+                episode += 1
+                play_episode(episode + 1)
             if "c" in command:
-                write_last_watched(i)
+                set_last_episode(episode)
                 break
     except (KeyboardInterrupt, SystemExit):
         pass
