@@ -1,3 +1,5 @@
+from time import sleep
+
 import requests
 import xml.etree.ElementTree as ET
 
@@ -8,7 +10,8 @@ def search(anime):
     global auth
     r = requests.get('http://myanimelist.net/api/anime/search.xml', params={'q': anime}, auth=auth)
     if r.status_code is not 200:
-        raise Exception
+        sleep(2)
+        return search(anime)
     root = ET.fromstring(r.content)
     ret = []
     for child in root.findall("entry"):
@@ -37,13 +40,11 @@ def set_last_episode(anime, episode):
     else:
         id_number = anime
     print id_number
-    root = ET.parse('template.xml').getroot()
+    root = ET.parse('/home/thinkredstone/Scripts/Playall/template.xml').getroot()
     root.find('episode').text = str(episode)
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root)
     data = {'data': xml}
     r = requests.post("http://myanimelist.net/api/animelist/update/%d.xml" % id_number, auth=auth, data=data)
-    if r.status_code != "200":
-        raise Exception
 
 
 class Anime:
@@ -58,4 +59,3 @@ class Anime:
 if __name__ == "__main__":
     anime = search('boku no hero academia')[0]
     print get_last_episode(anime)
-
