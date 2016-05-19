@@ -18,6 +18,18 @@ def search(anime):
     return ret
 
 
+def get_last_episode(anime):
+    if isinstance(anime, Anime):
+        id = anime.id
+    else:
+        id = anime
+    r = requests.get('http://myanimelist.net/malappinfo.php', params={'u': auth[0], 'status': 'all', 'type': 'anime'})
+    root = ET.fromstring(r.content)
+    for entry in root.findall('anime'):
+        if entry.find('series_animedb_id').text == str(id):
+            return int(entry.find('my_watched_episodes').text)
+
+
 class Anime:
     def __init__(self, id, title):
         self.id = id
@@ -25,3 +37,7 @@ class Anime:
 
     def __repr__(self):
         return "%s (ID: %d)" % (self.title, self.id)
+
+
+if __name__ == "__main__":
+    print get_last_episode(search('boku no hero academia')[0])
