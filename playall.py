@@ -27,14 +27,14 @@ def play_episode(episode):
 
 if __name__ == "__main__":
     try:
+        if len(argv) > 1:
+            write_anime(' '.join(argv[1:]))
+            anime = search(' '.join(argv[1:]))[0]
+        else:
+            anime = search(read_anime())[0]
+        episode = get_last_episode(anime)
         while True:
-            if len(argv) > 1:
-                write_anime(' '.join(argv[1:]))
-                anime = search(' '.join(argv[1:]))[0]
-            else:
-                anime = search(read_anime())[0]
             print anime
-            episode = get_last_episode(anime)
             print episode
             command = raw_input("Enter command\n")
             if "p" in command:
@@ -44,7 +44,7 @@ if __name__ == "__main__":
                 episode += 1
                 play_episode(episode + 1)
             if "c" in command:
-                set_last_episode(episode)
+                set_last_episode(anime, episode)
                 break
     except (KeyboardInterrupt, SystemExit):
         pass
