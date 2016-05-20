@@ -32,19 +32,19 @@ if __name__ == "__main__":
             anime = search(' '.join(argv[1:]))[0]
         else:
             anime = search(read_anime())[0]
-        episode = get_last_episode(anime)
+        current_episode = get_last_completed_episode(anime) + 1
         while True:
             print anime
-            print episode
+            print current_episode
             command = raw_input("Enter command\n")
             if "p" in command:
-                play_episode(episode + 1)
+                play_episode(current_episode)
             if "n" in command:
-                set_last_episode(anime, episode + 1)
-                episode += 1
-                play_episode(episode + 1)
+                set_last_episode(anime, current_episode)
+                current_episode += 1
+                play_episode(current_episode)
             if "c" in command:
-                set_last_episode(anime, episode)
+                set_last_episode(anime, current_episode)
                 break
     except (KeyboardInterrupt, SystemExit):
         pass

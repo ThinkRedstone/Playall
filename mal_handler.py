@@ -21,7 +21,7 @@ def search(anime):
     return ret
 
 
-def get_last_episode(anime):
+def get_last_completed_episode(anime):
     if isinstance(anime, Anime):
         id = anime.id
     else:
@@ -57,4 +57,4 @@ class Anime:
 
 if __name__ == "__main__":
     anime = search('boku no hero academia')[0]
-    print get_last_episode(anime)
+    print get_last_completed_episode(anime)
