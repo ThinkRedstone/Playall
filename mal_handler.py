@@ -39,7 +39,6 @@ def set_last_episode(anime, episode):
         id_number = anime.id
     else:
         id_number = anime
-    print id_number
     root = ET.parse('/home/thinkredstone/Scripts/Playall/template.xml').getroot()
     root.find('episode').text = str(episode)
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root)
