@@ -21,7 +21,7 @@ def search(anime):
     return ret
 
 
-def get_last_completed_episode(anime):
+def get_anime_from_list(anime):
     if isinstance(anime, Anime):
         id = anime.id
     else:
@@ -30,7 +30,12 @@ def get_last_completed_episode(anime):
     root = ET.fromstring(r.content)
     for entry in root.findall('anime'):
         if entry.find('series_animedb_id').text == str(id):
-            return int(entry.find('my_watched_episodes').text)
+            return entry
+
+
+def get_last_completed_episode(anime):
+    entry = get_anime_from_list(anime)
+    return int(entry.find('my_watched_episodes').text)
 
 
 def set_last_episode(anime, episode):
