@@ -22,6 +22,11 @@ def search(anime):
 
 
 def get_anime_from_list(anime):
+    """
+    :param anime: The id or Anime class to find
+    :rtype: xml.etree.ElementTree.Element
+    :return: The xml entry from auther's MAL
+    """
     if isinstance(anime, Anime):
         id = anime.id
     else:
@@ -44,9 +49,16 @@ def set_last_episode(anime, episode):
         id_number = anime.id
     else:
         id_number = anime
-    root = ET.parse('/home/thinkredstone/Scripts/Playall/template.xml').getroot()
-    root.find('episode').text = str(episode)
-    xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root)
+    anime_data = get_anime_from_list(anime)
+    score = anime_data.find('my_score').text
+    status = anime_data.find('my_status').text
+    rewatch_value = anime_data.find('my_rewatching').text != '0'
+    template = ET.parse('/home/thinkredstone/Scripts/Playall/template.xml').getroot()
+    template.find('episode').text = str(episode)
+    template.find('status').text = status
+    template.find('score').text = score
+    template.find('enable_rewatching').text = str(1 if rewatch_value else 0)
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(template)
     data = {'data': xml}
     r = requests.post("http://myanimelist.net/api/animelist/update/%d.xml" % id_number, auth=auth, data=data)
 
@@ -61,5 +73,5 @@ class Anime:
 
 
 if __name__ == "__main__":
-    anime = search('boku no hero academia')[0]
+    anime = search('blood lad')[0]
     print get_last_completed_episode(anime)
