@@ -1,5 +1,4 @@
 #!/usr/bin/python
-from getopt import gnu_getopt
 from os import getcwd
 from subprocess import call
 from sys import argv
@@ -28,17 +27,12 @@ def play_episode(episode):
 
 if __name__ == "__main__":
     try:
-        options, name = gnu_getopt(argv[1:], '-r')
-        if len(name) > 0:
-            write_anime(' '.join(name))
-            anime = search(' '.join(name))[0]
+        if len(argv) > 1:
+            write_anime(' '.join(argv[1:]))
+            anime = search(' '.join(argv[1:]))[0]
         else:
             anime = search(read_anime())[0]
-        if [(o, v) for o, v in options if o == '-r']:
-            rewatching = True
-        else:
-            rewatching = False
-        current_episode = get_last_completed_episode(anime, rewatching=rewatching) + 1
+        current_episode = get_last_completed_episode(anime) + 1
         while True:
             print anime
             print current_episode

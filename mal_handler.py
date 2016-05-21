@@ -21,7 +21,7 @@ def search(anime):
     return ret
 
 
-def get_last_completed_episode(anime, rewatching=False):
+def get_last_completed_episode(anime):
     if isinstance(anime, Anime):
         id = anime.id
     else:
@@ -30,10 +30,7 @@ def get_last_completed_episode(anime, rewatching=False):
     root = ET.fromstring(r.content)
     for entry in root.findall('anime'):
         if entry.find('series_animedb_id').text == str(id):
-            if not rewatching:
-                return int(entry.find('my_watched_episodes').text)
-            else:
-                return int(entry.find('my_rewatching_ep').text)
+            return int(entry.find('my_watched_episodes').text)
 
 
 def set_last_episode(anime, episode):
