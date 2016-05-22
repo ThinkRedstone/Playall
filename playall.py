@@ -29,9 +29,10 @@ if __name__ == "__main__":
     try:
         if len(argv) > 1:
             write_anime(' '.join(argv[1:]))
-            anime = search(' '.join(argv[1:]))[0]
+            anime_name = ' '.join(argv[1:])
         else:
-            anime = search(read_anime())[0]
+            anime_name = read_anime()
+        anime = [a for a in search(anime_name) if a.title.lower() == anime_name.lower()].pop()
         current_episode = get_last_completed_episode(anime) + 1
         while True:
             print anime
