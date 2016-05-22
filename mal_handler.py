@@ -42,7 +42,7 @@ def get_anime_from_list(anime):
     for entry in root.findall('anime'):
         if entry.find('series_animedb_id').text == str(id):
             return entry
-    raise Exception("The anime %s is not on your MAL!" % anime)
+    raise Exception("The anime %s is not on your MAL!" % str(anime))
 
 
 def get_last_completed_episode(anime):
