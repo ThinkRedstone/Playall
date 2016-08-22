@@ -3,6 +3,7 @@ from os import getcwd
 from subprocess import call
 from sys import argv
 from mal_handler import *
+from threading import Thread
 
 
 def episode_string(n):
@@ -41,7 +42,7 @@ if __name__ == "__main__":
             if "p" in command:
                 play_episode(current_episode)
             if "n" in command:
-                set_last_episode(anime, current_episode)
+                Thread(target=set_last_episode, args=(anime, current_episode)).start()
                 current_episode += 1
                 play_episode(current_episode)
             if "c" in command:
