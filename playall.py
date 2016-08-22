@@ -4,6 +4,7 @@ from subprocess import call
 from sys import argv
 from mal_handler import *
 from threading import Thread
+import argparse
 
 
 def episode_string(n):
@@ -27,14 +28,18 @@ def play_episode(episode):
 
 
 if __name__ == "__main__":
+    print argv
+    parser = argparse.ArgumentParser()
+    parser.add_argument('anime_name', nargs='?', help="Anime Name to search on MAL (Exact Spelling)")
+    args = parser.parse_args()
     try:
-        if len(argv) > 1:
-            write_anime(' '.join(argv[1:]))
-            anime_name = ' '.join(argv[1:])
-        else:
-            anime_name = read_anime()
-        anime = [a for a in search(anime_name) if a.title.lower() == anime_name.lower()].pop()
-        current_episode = get_last_completed_episode(anime) + 1
+        anime_name = read_anime()
+    except IOError:
+        anime_name = args.anime_name
+        write_anime(anime_name)
+    anime = [a for a in search(anime_name) if a.title.lower() == anime_name.lower()].pop()
+    current_episode = get_last_completed_episode(anime) + 1
+    try:
         while True:
             print anime
             print current_episode
