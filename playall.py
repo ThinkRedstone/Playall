@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 from os import getcwd
 from subprocess import call
 from sys import argv
