@@ -14,16 +14,22 @@ def search(anime):
     :return:
     """
     global auth
-    r = requests.get('http://myanimelist.net/api/anime/search.xml', params={'q': anime}, auth=auth)
+    r = requests.get('https://myanimelist.net/api/anime/search.xml', params={'q': anime}, auth=auth)
     if r.status_code is not 200:
+        print "Could not complete search. Retrying..."
         sleep(2)
         return search(anime)
-    root = ET.fromstring(r.content)
     ret = []
-    for child in root.findall("entry"):
-        id = int(child.find("id").text)
-        title = child.find('title').text
-        ret.append(Anime(id, title))
+    try:
+        root = ET.fromstring(r.content)
+        for child in root.findall("entry"):
+            id = int(child.find("id").text)
+            title = child.find('title').text
+            ret.append(Anime(id, title))
+    except ET.ParseError:
+        print "Got invalid data. Was suppose to get data about anime, instead got this:"
+        print r.content
+        raise Exception("Got invalid response from server!")
     return ret
 
 
