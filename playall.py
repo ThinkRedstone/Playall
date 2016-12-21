@@ -37,10 +37,8 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--directory", default=getcwd(), help="Directory to run playall from (default is cwd)")
     args = parser.parse_args()
     directory = os.path.abspath(args.directory) + "/"
-    try:
-        anime_name = read_anime(directory=directory)
-    except IOError:
-        anime_name = args.anime_name
+    anime_name = args.anime_name if args.anime_name else read_anime(directory=directory)
+    if anime_name != read_anime(directory=directory):
         write_anime(anime_name, directory=directory)
     anime = [a for a in search(anime_name) if a.title.lower() == anime_name.lower()].pop()
     current_episode = get_last_completed_episode(anime) + 1
