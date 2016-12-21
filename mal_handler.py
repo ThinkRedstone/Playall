@@ -73,7 +73,7 @@ def set_last_episode(anime, episode):
     template.find('enable_rewatching').text = str(1 if rewatch_value else 0)
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(template)
     data = {'data': xml}
-    r = requests.post("http://myanimelist.net/api/animelist/update/%d.xml" % id_number, auth=auth, data=data)
+    r = requests.post("https://myanimelist.net/api/animelist/update/%d.xml" % id_number, auth=auth, data=data)
 
 
 class Anime:
