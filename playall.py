@@ -25,8 +25,10 @@ def write_anime(anime, directory=getcwd()):
 
 
 def play_episode(episode, directory=getcwd()):
-    print directory
-    call('%s "%s" %s' % (SCRIPT_PATH, directory, episode_string(episode)), shell=True)
+    try:
+        call('%s "%s" %s' % (SCRIPT_PATH, directory, episode_string(episode)), shell=True)
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == "__main__":
