@@ -24,9 +24,9 @@ def write_anime(anime, directory=getcwd()):
         f.write(str(anime))
 
 
-def play_episode(episode, directory=getcwd()):
+def play_episode(episode, directory=getcwd(), options=""):
     try:
-        call('%s "%s" %s' % (SCRIPT_PATH, directory, episode_string(episode)), shell=True)
+        call('%s "%s" %s "%s"' % (SCRIPT_PATH, directory, episode_string(episode), options), shell=True)
     except KeyboardInterrupt:
         pass
 
@@ -35,10 +35,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('anime_name', nargs='?', help="Anime name to search on MAL (Exact Spelling)")
     parser.add_argument("-d", "--directory", default=getcwd(), help="Directory to run playall from (default is cwd)")
+    parser.add_argument("-o", "--options", nargs="+", help="Extra options to pass to the video player")
     args = parser.parse_args()
     directory = os.path.abspath(args.directory) + "/"
-    anime_name = args.anime_name if args.anime_name else read_anime(directory=directory)
-    if anime_name != read_anime(directory=directory):
+    try:
+        anime_name = args.anime_name if args.anime_name else read_anime(directory=directory)
+        if anime_name != read_anime(directory=directory):
+            write_anime(anime_name, directory=directory)
+    except IOError:
+        anime_name = args.anime_name
         write_anime(anime_name, directory=directory)
     anime = [a for a in search(anime_name) if a.title.lower() == anime_name.lower()].pop()
     current_episode = get_last_completed_episode(anime) + 1
@@ -48,11 +53,11 @@ if __name__ == "__main__":
             print current_episode
             command = raw_input("Enter command\n")
             if "p" in command:
-                play_episode(current_episode, directory=directory)
+                play_episode(current_episode, directory=directory, options=" ".join(args.options))
             if "n" in command:
                 Thread(target=set_last_episode, args=(anime, current_episode)).start()
                 current_episode += 1
-                play_episode(current_episode, directory=directory)
+                play_episode(current_episode, directory=directory, options=" ".join(args.options))
             if "c" in command:
                 set_last_episode(anime, current_episode)
                 break

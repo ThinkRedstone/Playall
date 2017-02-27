@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
 
-vlc -f "$1""$(ls "$1"| grep -E "[^0-9]($2)[^0-9]")"
+cd $1
+vlc $3 -f "$(ls | grep -E "[^0-9]($2)[^0-9]")"
