@@ -25,6 +25,7 @@ def write_anime(anime, directory=getcwd()):
 
 
 def play_episode(episode, directory=getcwd(), options=""):
+    options = "" if options is None else " ".join(options)
     try:
         call('%s "%s" %s "%s"' % (SCRIPT_PATH, directory, episode_string(episode), options), shell=True)
     except KeyboardInterrupt:
@@ -53,11 +54,11 @@ if __name__ == "__main__":
             print current_episode
             command = raw_input("Enter command\n")
             if "p" in command:
-                play_episode(current_episode, directory=directory, options=" ".join(args.options))
+                play_episode(current_episode, directory=directory, options=args.options)
             if "n" in command:
                 Thread(target=set_last_episode, args=(anime, current_episode)).start()
                 current_episode += 1
-                play_episode(current_episode, directory=directory, options=" ".join(args.options))
+                play_episode(current_episode, directory=directory, options=args.options)
             if "c" in command:
                 set_last_episode(anime, current_episode)
                 break
