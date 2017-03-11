@@ -44,7 +44,12 @@ def get_anime_from_list(anime):
     else:
         id = anime
     r = requests.get('http://myanimelist.net/malappinfo.php', params={'u': auth[0], 'status': 'all', 'type': 'anime'})
-    root = ET.fromstring(r.content)
+    try:
+        root = ET.fromstring(r.content)
+    except ET.ParseError:
+        print "Got invalid data. Was suppose to get data about anime from your MAL, instead got this:"
+        print r.content
+        raise Exception("Got invalid response from server!")
     for entry in root.findall('anime'):
         if entry.find('series_animedb_id').text == str(id):
             return entry
