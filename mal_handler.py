@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 import os
 
 with open(os.path.join(os.path.dirname(__file__), 'password.txt'), "r") as f:
+    # the auth token used with the MAL api
     auth = (f.readline().strip(), f.readline().strip())
 
 
@@ -63,20 +64,26 @@ def get_anime_from_list(anime):
 
 
 def get_last_completed_episode(anime):
+    """
+
+    :param anime: the anime object or anime id to get the last completed episode for
+    :return: the number of the last completed episode
+    """
     entry = get_anime_from_list(anime)
     return int(entry.find('my_watched_episodes').text)
 
 
 def set_last_episode(anime, episode):
+    """
+
+    :param anime: the anime object or anime id to change the last completed episode for
+    :param episode: the number of the last completed episode to set
+    """
     global auth
     if isinstance(anime, Anime):
         id_number = anime.id
     else:
         id_number = anime
-    anime_data = get_anime_from_list(anime)
-    score = anime_data.find('my_score').text
-    status = anime_data.find('my_status').text
-    rewatch_value = anime_data.find('my_rewatching').text != '0'
     template = ET.parse('/home/thinkredstone/Scripts/Playall/template.xml').getroot()
     template.find('episode').text = str(episode)
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(template)
@@ -85,7 +92,14 @@ def set_last_episode(anime, episode):
 
 
 class Anime:
+    __doc__ = "this class represents a specific anime on MAL using it's id and title"
+
     def __init__(self, id, title):
+        """
+
+        :param id: the id of the anime
+        :param title: the title of the anime
+        """
         self.id = id
         self.title = title
 
