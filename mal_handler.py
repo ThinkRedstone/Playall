@@ -3,7 +3,8 @@ from time import sleep
 import requests
 import xml.etree.ElementTree as ET
 
-auth = ("thinkredstone", "***REMOVED***")
+with open("password.txt", "r") as f:
+    auth = (f.readline().strip(), f.readline().strip())
 
 
 def search(anime_name):
