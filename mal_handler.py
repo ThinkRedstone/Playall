@@ -2,8 +2,9 @@ from time import sleep
 
 import requests
 import xml.etree.ElementTree as ET
+import os
 
-with open("password.txt", "r") as f:
+with open(os.path.join(os.path.dirname(__file__), 'password.txt'), "r") as f:
     auth = (f.readline().strip(), f.readline().strip())
 
 
