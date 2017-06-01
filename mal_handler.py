@@ -32,7 +32,11 @@ def search(anime_name):
         print "Got invalid data. Was suppose to get data about anime_name, instead got this:"
         print r.content
         raise Exception("Got invalid response from server!")
-    return [a for a in found_anime if a.title.lower() == anime_name.lower()].pop()
+    try:
+        return [a for a in found_anime if a.title.lower() == anime_name.lower()].pop()
+    except IndexError:
+        print "Cannot find an anime with that title."
+        raise Exception("Could not find anime with title %s" % anime_name)
 
 
 def get_anime_from_list(anime):
