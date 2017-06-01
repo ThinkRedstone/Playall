@@ -56,14 +56,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
     directory = os.path.abspath(args.directory) + "/"
     try:
-        try:
-            anime = search(args.anime) if args.anime else read_anime(directory=directory)
-            if anime != read_anime(directory=directory):
-                write_anime(anime, directory=directory)
-        except IOError:
-            anime = search(args.anime)
+        anime = search(args.anime) if args.anime else read_anime(directory=directory)
+        if anime != read_anime(directory=directory):
             write_anime(anime, directory=directory)
-        current_episode = get_last_completed_episode(anime) + 1
+    except IOError:
+        anime = search(args.anime)
+        write_anime(anime, directory=directory)
+    current_episode = get_last_completed_episode(anime) + 1
+    try:
         while True:
             print anime
             print current_episode
