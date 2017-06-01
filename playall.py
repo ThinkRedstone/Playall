@@ -21,7 +21,7 @@ def read_anime(directory=getcwd()):
     :return: the anime
     """
     with open(directory + "/.playall", "r") as f:
-        return f.readline()
+        return search(f.readline())
 
 
 def write_anime(anime, directory=getcwd()):
@@ -31,7 +31,7 @@ def write_anime(anime, directory=getcwd()):
     :param directory: the directory in which the .playall file should be generated. Should contain the episodes of that anime.
     """
     with open(directory + "/.playall", "w+") as f:
-        f.write(str(anime))
+        f.write(anime.title)
 
 
 def play_episode(episode, directory=getcwd(), options=""):
@@ -50,21 +50,20 @@ def play_episode(episode, directory=getcwd(), options=""):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('anime_name', nargs='?', help="Anime name to search on MAL (Exact Spelling)")
+    parser.add_argument('anime', nargs='?', help="Anime name to search on MAL (Exact Spelling)")
     parser.add_argument("-d", "--directory", default=getcwd(), help="Directory to run playall from (default is cwd)")
     parser.add_argument("-o", "--options", nargs="+", help="Extra options to pass to the video player")
     args = parser.parse_args()
     directory = os.path.abspath(args.directory) + "/"
     try:
-        anime_name = args.anime_name if args.anime_name else read_anime(directory=directory)
-        if anime_name != read_anime(directory=directory):
-            write_anime(anime_name, directory=directory)
-    except IOError:
-        anime_name = args.anime_name
-        write_anime(anime_name, directory=directory)
-    anime = [a for a in search(anime_name) if a.title.lower() == anime_name.lower()].pop()
-    current_episode = get_last_completed_episode(anime) + 1
-    try:
+        try:
+            anime = search(args.anime) if args.anime else read_anime(directory=directory)
+            if anime != read_anime(directory=directory):
+                write_anime(anime, directory=directory)
+        except IOError:
+            anime = search(args.anime)
+            write_anime(anime, directory=directory)
+        current_episode = get_last_completed_episode(anime) + 1
         while True:
             print anime
             print current_episode
