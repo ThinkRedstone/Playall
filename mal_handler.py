@@ -6,31 +6,31 @@ import xml.etree.ElementTree as ET
 auth = ("thinkredstone", "***REMOVED***")
 
 
-def search(anime):
+def search(anime_name):
     """
 
-    :param anime:
-    :rtype: list[Anime]
-    :return:
+    :param anime_name: the name of the anime to search on MAL
+    :rtype: Anime
+    :return: the Anime on MAL with that exact name; ignoring caps.
     """
     global auth
-    r = requests.get('https://myanimelist.net/api/anime/search.xml', params={'q': anime}, auth=auth)
+    r = requests.get('https://myanimelist.net/api/anime/search.xml', params={'q': anime_name}, auth=auth)
     if r.status_code is not 200:
         print "Could not complete search. Retrying..."
         sleep(2)
-        return search(anime)
-    ret = []
+        return search(anime_name)
+    found_anime = []
     try:
         root = ET.fromstring(r.content)
         for child in root.findall("entry"):
             id = int(child.find("id").text)
             title = child.find('title').text
-            ret.append(Anime(id, title))
+            found_anime.append(Anime(id, title))
     except ET.ParseError:
-        print "Got invalid data. Was suppose to get data about anime, instead got this:"
+        print "Got invalid data. Was suppose to get data about anime_name, instead got this:"
         print r.content
         raise Exception("Got invalid response from server!")
-    return ret
+    return [a for a in found_anime if a.title.lower() == anime_name.lower()].pop()
 
 
 def get_anime_from_list(anime):
@@ -91,5 +91,5 @@ class Anime:
 
 
 if __name__ == "__main__":
-    anime = search('blood lad')[0]
+    anime = search('blood lad')
     print get_last_completed_episode(anime)

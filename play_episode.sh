@@ -2,4 +2,4 @@
 
 
 cd "$1"
-vlc $3 -f "$(ls | grep -E "[^0-9]($2)[^0-9]")"
+vlc $3 -f "$(ls | head -n$2 | tail -n1)"
