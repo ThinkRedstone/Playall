@@ -7,14 +7,8 @@ import argparse
 import os
 
 ROOT_DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
+# The path to the script used to play episodes
 SCRIPT_PATH = os.path.join(ROOT_DIR, "play_episode.sh")
-
-
-def episode_string(n, min_length=2):
-    s = str(n)
-    while len(s) < min_length:
-        s = "0" + s
-    return s
 
 
 def read_anime(directory=getcwd()):
@@ -46,7 +40,7 @@ def play_episode(episode, directory=getcwd(), options=""):
     """
     options = "" if options is None else " ".join(options)
     try:
-        call('%s "%s" %s "%s"' % (SCRIPT_PATH, directory, episode_string(episode), options), shell=True)
+        call('%s "%s" %s "%s"' % (SCRIPT_PATH, directory, str(episode), options), shell=True)
     except KeyboardInterrupt:
         pass
 
