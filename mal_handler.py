@@ -70,7 +70,7 @@ def get_last_completed_episode(anime):
     :return: the number of the last completed episode
     """
     entry = get_anime_from_list(anime)
-    return int(entry.find('my_watched_episodes').text)
+    return int(entry.find('my_watched_episodes').text) if entry.find('my_watched_episodes').text else 0
 
 
 def set_last_episode(anime, episode):
