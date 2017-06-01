@@ -44,7 +44,7 @@ def get_anime_from_list(anime):
         id = anime.id
     else:
         id = anime
-    r = requests.get('http://myanimelist.net/malappinfo.php', params={'u': auth[0], 'status': 'all', 'type': 'anime'})
+    r = requests.get('https://myanimelist.net/malappinfo.php', params={'u': auth[0], 'status': 'all', 'type': 'anime'})
     try:
         root = ET.fromstring(r.content)
     except ET.ParseError:
@@ -74,12 +74,9 @@ def set_last_episode(anime, episode):
     rewatch_value = anime_data.find('my_rewatching').text != '0'
     template = ET.parse('/home/thinkredstone/Scripts/Playall/template.xml').getroot()
     template.find('episode').text = str(episode)
-    template.find('status').text = status
-    template.find('score').text = score
-    template.find('enable_rewatching').text = str(1 if rewatch_value else 0)
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(template)
     data = {'data': xml}
-    r = requests.post("https://myanimelist.net/api/animelist/update/%d.xml" % id_number, auth=auth, data=data)
+    requests.post("https://myanimelist.net/api/animelist/update/%d.xml" % id_number, auth=auth, data=data)
 
 
 class Anime:
