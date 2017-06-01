@@ -10,8 +10,11 @@ ROOT_DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
 SCRIPT_PATH = os.path.join(ROOT_DIR, "play_episode.sh")
 
 
-def episode_string(n):
-    return str(n / 10) + str(n % 10)
+def episode_string(n, min_length=2):
+    s = str(n)
+    while len(s) < min_length:
+        s = "0" + s
+    return s
 
 
 def read_anime(directory=getcwd()):
