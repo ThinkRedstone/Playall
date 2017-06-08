@@ -40,6 +40,33 @@ def search(anime_name):
         raise Exception("Could not find anime with title %s" % anime_name)
 
 
+def search_all(anime_name):
+    """
+
+    :param anime_name: the name of the anime to search on MAL
+    :rtype: [Anime]
+    :return: Anime returned by MAL's search function
+    """
+    global auth
+    r = requests.get('https://myanimelist.net/api/anime/search.xml', params={'q': anime_name}, auth=auth)
+    if r.status_code is not 200:
+        print "Could not complete search. Retrying..."
+        sleep(2)
+        return search(anime_name)
+    found_anime = []
+    try:
+        root = ET.fromstring(r.content)
+        for child in root.findall("entry"):
+            id = int(child.find("id").text)
+            title = child.find('title').text
+            found_anime.append(Anime(id, title))
+    except ET.ParseError:
+        print "Got invalid data. Was suppose to get data about anime_name, instead got this:"
+        print r.content
+        raise Exception("Got invalid response from server!")
+    return found_anime
+
+
 def get_anime_from_list(anime):
     """
     :param anime: The id or Anime class to find
